@@ -1,8 +1,15 @@
 const express = require('express');
 const cors = require('cors');
+const fetch = require('node-fetch');
 
 const app = express();
-app.use(cors());
+
+const corsOptions = {
+  origin: ['http://localhost:3000', 'https://web-tech-detector.vercel.app'], // add your frontend URLs here
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type'],
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Function to detect techs from HTML

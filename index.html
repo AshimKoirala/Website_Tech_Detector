@@ -180,7 +180,7 @@
     resultsContainer.innerHTML = `<li style="font-style: italic;">Detecting...</li>`;
 
     try {
-      const res = await fetch('http://localhost:5000/detect', {
+      const res = await fetch('https://websitetechdetector-production.up.railway.app/detect', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url }),
