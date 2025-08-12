@@ -10,6 +10,7 @@ const corsOptions = {
   allowedHeaders: ['Content-Type'],
 };
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json());
 
 // Function to detect techs from HTML
