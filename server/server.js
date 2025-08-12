@@ -4,7 +4,28 @@ const fetch = require('node-fetch');
 
 const app = express();
 
-app.use(cors());
+const allowedOrigins = [
+  'https://web-tech-detector.vercel.app',
+  'http://localhost:3000',
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like curl, Postman)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type'],
+};
+
+app.use(cors(corsOptions));
+app.options('/detect', cors(corsOptions)); // handle preflight OPTIONS
+
 app.use(express.json());
 
 // Function to detect techs from HTML
@@ -61,7 +82,7 @@ function detectTech(html) {
   if (/fontawesome/i.test(html)) techs.push("Font Awesome");
   if (/material-icons/i.test(html)) techs.push("Material Icons");
 
-  return [...new Set(techs)]; // Remove duplicates
+  return [...new Set(techs)];
 }
 
 app.post('/detect', async (req, res) => {
@@ -95,6 +116,11 @@ app.post('/detect', async (req, res) => {
     console.error("Error in /detect route:", err);
     res.status(500).json({ error: "Could not fetch or analyze URL" });
   }
+});
+
+// Optional: simple GET route for health check
+app.get('/', (req, res) => {
+  res.send('Website Tech Detector API running');
 });
 
 // Global error handler middleware
