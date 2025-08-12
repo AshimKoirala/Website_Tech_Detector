@@ -4,13 +4,7 @@ const fetch = require('node-fetch');
 
 const app = express();
 
-const corsOptions = {
-  origin: ['http://localhost:3000', 'https://web-tech-detector.vercel.app'], // add your frontend URLs here
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type'],
-};
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 
 // Function to detect techs from HTML
@@ -78,6 +72,8 @@ app.post('/detect', async (req, res) => {
   }
 
   try {
+    console.log(`Fetching URL: ${url}`);
+
     const response = await fetch(url, {
       headers: { 
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
@@ -87,6 +83,7 @@ app.post('/detect', async (req, res) => {
     });
 
     if (!response.ok) {
+      console.error(`Fetch failed with status: ${response.status}`);
       throw new Error(`Failed to fetch (status ${response.status})`);
     }
 
@@ -95,10 +92,16 @@ app.post('/detect', async (req, res) => {
 
     res.json({ techs });
   } catch (err) {
-    console.error(err);
+    console.error("Error in /detect route:", err);
     res.status(500).json({ error: "Could not fetch or analyze URL" });
   }
 });
 
+// Global error handler middleware
+app.use((err, req, res, next) => {
+  console.error("Internal server error:", err);
+  res.status(500).json({ error: "Internal server error" });
+});
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
