@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+   <title>Website Technology Detector - Detect CMS, Frameworks & More</title>
+
+  <meta name="description" content="Detect which technologies, CMS, JavaScript frameworks, and tools are used by any website. Easy and fast Website Technology Detector tool." />
+  
+  <meta name="keywords" content="website technology detector, detect website tech, cms detector, framework detector, wordpress detector, react detector, tech stack analysis, website tech analysis, website technology checker" />
+  
+  <meta name="author" content="Ashim Koirala" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95)), url('https://source.unsplash.com/1920x1080/?technology') no-repeat center/cover;
+      color: #fff;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      backdrop-filter: blur(15px);
+      padding: 30px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+      animation: fadeIn 0.6s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    p.note {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.8);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+      font-size: 1rem;
+      margin-bottom: 15px;
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+    }
+
+    input::placeholder {
+      color: rgba(255,255,255,0.6);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #4f46e5, #3b82f6);
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #4338ca, #2563eb);
+    }
+
+    ul#results {
+      list-style: none;
+      padding: 0;
+      margin: 15px 0 0;
+    }
+
+    ul#results li {
+      background: rgba(255, 255, 255, 0.1);
+      margin-bottom: 8px;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+    }
+
+    ul#results li img {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="glass">
+    <h1>🔍 Website Tech Detector - Detect CMS, Frameworks & More</h1>
+    <p class="note">Note: This tool detects only a few major technologies. Results may not include all technologies used by the website.</p>
+    <input type="text" id="urlInput" placeholder="Enter website URL (e.g. https://example.com)" />
+    <button onclick="detectTech()">Detect</button>
+    <ul id="results"></ul>
+  </div>
+
+<script>
+  const techLogos = {
+    "WordPress": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/wordpress/wordpress-original.svg",
+    "Drupal": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/drupal/drupal-original.svg",
+    "Joomla": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/joomla/joomla-original.svg",
+    "Shopify": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/shopify/shopify-original.svg",
+    "Magento": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/magento/magento-original.svg",
+    "Ghost": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ghost/ghost-original.svg",
+
+    "jQuery": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jquery/jquery-original.svg",
+    "React": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
+    "Next.js": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg",
+    "Vue.js": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg",
+    "Nuxt.js": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Nuxt-js.png/640px-Nuxt-js.png",
+    "Angular": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angularjs/angularjs-original.svg",
+    "Svelte": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/svelte/svelte-original.svg",
+    "Ember.js": "https://upload.wikimedia.org/wikipedia/commons/6/6a/Ember-logo.png",
+    "Alpine.js": "https://alpinejs.dev/alpine-logo.svg",
+
+    "Bootstrap": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-plain.svg",
+    "Tailwind CSS": "https://tailwindcss.com/favicons/favicon-32x32.png?v=4",
+    "Foundation": "https://foundation.zurb.com/assets/img/foundation-icons/foundation-icon.svg",
+    "Bulma": "https://bulma.io/images/bulma-logo.png",
+
+    "Google Analytics": "https://www.gstatic.com/analytics-suite/header/suite/v2/ic_analytics.svg",
+    "Matomo": "https://matomo.org/wp-content/uploads/2019/01/matomo-logo.png",
+    "Hotjar": "https://cdn.worldvectorlogo.com/logos/hotjar.svg",
+    "Mixpanel": "https://cdn.worldvectorlogo.com/logos/mixpanel.svg",
+    "Segment": "https://segment.com/wp-content/uploads/2020/04/segment-logo.svg",
+
+    "WooCommerce": "https://woocommerce.com/wp-content/themes/woo/images/woocommerce-logo.svg",
+    "BigCommerce": "https://upload.wikimedia.org/wikipedia/commons/9/95/Bigcommerce_logo.svg",
+    "PrestaShop": "https://www.prestashop.com/themes/custom/prestashop/assets/img/logo.svg",
+    "OpenCart": "https://upload.wikimedia.org/wikipedia/commons/f/f0/OpenCart_Logo.png",
+
+    "Cloudflare": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Cloudflare_logo.svg/1200px-Cloudflare_logo.svg.png",
+    "Firebase": "https://cdn.worldvectorlogo.com/logos/firebase-1.svg",
+    "AWS": "https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg",
+    "Heroku": "https://upload.wikimedia.org/wikipedia/commons/e/e3/Heroku_Logo.svg",
+    "Netlify": "https://www.netlify.com/v3/img/components/logomark.png",
+    "Vercel": "https://pnghq.com/wp-content/uploads/pnghq.com-vercel-logo-black-premium-8.png",
+
+    "Font Awesome": "https://fontawesome.com/images/favicon/icon.svg",
+    "Material Icons": "https://m3.material.io/static/assets/m3-favicon.ico",
+  };
+
+  async function detectTech() {
+    const url = document.getElementById("urlInput").value.trim();
+    const resultsContainer = document.getElementById("results");
+    
+    if (!url) {
+      alert("Please enter a URL");
+      return;
+    }
+
+    // Show loading state immediately after click
+    resultsContainer.innerHTML = `<li style="font-style: italic;">Detecting...</li>`;
+
+    try {
+      const res = await fetch('http://localhost:5000/detect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        resultsContainer.innerHTML = `<li style="color: #f87171;">${errorData.error || 'Error occurred'}</li>`;
+        return;
+      }
+
+      const data = await res.json();
+
+      if (!data.techs || data.techs.length === 0) {
+        resultsContainer.innerHTML = `<li>No major technologies detected</li>`;
+        return;
+      }
+
+      resultsContainer.innerHTML = ""; // Clear "Detecting..." message
+
+      data.techs.forEach(tech => {
+        const li = document.createElement("li");
+
+        if (techLogos[tech]) {
+          const img = document.createElement("img");
+          img.src = techLogos[tech];
+          img.alt = tech + " logo";
+          li.appendChild(img);
+        }
+
+        li.appendChild(document.createTextNode(tech));
+        resultsContainer.appendChild(li);
+      });
+
+    } catch (error) {
+      resultsContainer.innerHTML = `<li style="color: #f87171;">Error fetching technologies</li>`;
+    }
+  }
+</script>
+
+</body>
+</html>
